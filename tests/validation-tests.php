@@ -71,6 +71,14 @@ runTest('Invalid points', [
     'points' => 'abc'
 ], false);
 
+ // Test 7: Altered card name submitted as an array.
+runTest('Altered card name array', [
+    'cardName' => ['Invalid', 'Array'],
+    'cardType' => 'Digital',
+    'cardValue' => '25.00',
+    'points' => '2500'
+], false);
+
 // Display summary.
 echo "\nValidation Test Summary\n";
 echo "Passed: $passed\n";

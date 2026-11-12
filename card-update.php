@@ -1,4 +1,3 @@
-
 <?php
 require_once __DIR__ . '/includes/db.php';
 require_once __DIR__ . '/includes/validation.php';
@@ -70,8 +69,13 @@ if (empty($errors)) {
     $message = 'Please correct the invalid information.';
 }
 
-    // Preserve submitted values when validation fails.
-    $card = array_merge($card, $_POST);
+    // Preserve only valid text values when validation fails.
+    // Reject array inputs so they cannot cause errors during HTML output.
+    foreach (['cardName', 'cardType', 'cardValue', 'points'] as $field) {
+        if (isset($_POST[$field]) && is_string($_POST[$field])) {
+            $card[$field] = $_POST[$field];
+        }
+    }
 }
 ?>
 

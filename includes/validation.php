@@ -11,14 +11,14 @@ function validateGiftCard(array $data): array
 {
     $errors = [];
 
-    // Validate card name.
-    $cardName = trim((string) ($data['cardName'] ?? ''));
+// Validate card name.
+$cardName = $data['cardName'] ?? '';
 
-    if ($cardName === '') {
-        $errors['cardName'] = 'Card name is required.';
-    } elseif (strlen($cardName) > 100) {
-        $errors['cardName'] = 'Card name cannot exceed 100 characters.';
-    }
+if (!is_string($cardName) || trim($cardName) === '') {
+    $errors['cardName'] = 'Card name is required and must be valid text.';
+} elseif (strlen(trim($cardName)) > 100) {
+    $errors['cardName'] = 'Card name cannot exceed 100 characters.';
+}
 
     // Validate card type.
     $allowedTypes = ['Digital', 'Physical'];

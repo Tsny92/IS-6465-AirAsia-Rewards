@@ -33,11 +33,11 @@ The following tests correspond to the eight required test cases in the Homework 
 **Test Steps and Input:**
 1. Open the Codespaces terminal.
 2. Execute `php -d xdebug.mode=off tests/validation-tests.php`.
-3. Review the PASS/FAIL output for six validation scenarios.
+3. Review the PASS/FAIL output for seven validation scenarios.
 
-**Expected Result:** All six tests pass without modifying database records.
+**Expected Result:** All seven tests pass without modifying database records.
 
-**Actual Result:** All six validation tests passed with zero failures.
+**Actual Result:** All seven validation tests passed with zero failures.
 
 **Status:** PASS
 
@@ -177,7 +177,7 @@ All temporary database changes made during testing were reversed or removed.
 **Execution Command:**
 
 ```bash
-php tests/validation-tests.php
+php -d xdebug.mode=off tests/validation-tests.php
 ```
 
 | Test | Expected Behavior | Result |
@@ -188,6 +188,7 @@ php tests/validation-tests.php
 | Zero card value | Reject zero value | PASS |
 | Negative card value | Reject negative value | PASS |
 | Invalid points | Reject noninteger points | PASS |
+| Altered card name array | Reject a card name submitted as an array | PASS |
 
 **Automated Test Results:**
 
@@ -198,15 +199,16 @@ PASS: Invalid card type
 PASS: Zero card value
 PASS: Negative card value
 PASS: Invalid points
+PASS: Altered card name array
 
 Validation Test Summary
-Passed: 6
+Passed: 7
 Failed: 0
 ```
 
-All six automated validation tests passed.
+All seven automated validation tests passed.
 
-These tests call the shared validation function directly and do not modify the database.
+These tests call the shared validation function directly and do not modify database records.
 
 ---
 
@@ -299,14 +301,50 @@ php -l filename.php
 
 Syntax checks passed for the pages and components tested during implementation.
 
+## 7. Defects Identified and Corrected
+
+The following issues were identified during a second code audit and corrected before final submission.
+
+### Defect 1: Leading Whitespace Before PHP Opening Tags
+
+**Problem:** The files `card-update.php` and `card-details.php` contained leading whitespace before their opening PHP tags. This could cause HTTP header problems, particularly when redirecting after updating a gift card.
+
+**Correction:** Removed the leading whitespace so both files begin directly with `<?php`.
+
+**Retest Result:** The PHP files were checked for correct opening tags. A final browser-level redirect test is still recommended.
+
+### Defect 2: Malformed Card Name Validation
+
+**Problem:** The shared validation function could generate a PHP warning when a modified form submitted Card Name as an array instead of a string.
+
+**Correction:** Updated `includes/validation.php` to verify that Card Name is a string before trimming or measuring its length.
+
+**Retest Result:** Added an automated test named `Altered card name array`. All seven validation tests passed with zero failures.
+
+### Defect 3: Malformed Input Handling on the Update Page
+
+**Problem:** The Update page copied all submitted values directly into the displayed gift card record. An altered array input could cause an error when the page attempted to escape the value for HTML output.
+
+**Correction:** Updated `card-update.php` to preserve only string values from submitted form fields when validation fails.
+
+**Retest Result:** PHP syntax verification passed, and all seven automated validation tests passed. Browser-level testing of malformed submissions remains recommended.
+
+### Defect 4: Malformed Input Handling on the Add Page
+
+**Problem:** The Add page preserved submitted values without checking their types. An altered array input could produce a warning when redisplaying the form.
+
+**Correction:** Updated `card-add.php` to preserve submitted string values and replace malformed array values with empty strings.
+
+**Retest Result:** PHP syntax verification passed, and all seven automated validation tests passed. Browser-level testing of malformed submissions remains recommended.
+
 ---
 
-## 7. Testing Conclusion
+## 8. Testing Conclusion
 
 The AirAsia Rewards Gift Card Management System successfully implements the required CRUD functionality using PHP, PDO, and SQLite.
 
 Browser testing and SQL verification confirmed that gift cards can be created, retrieved, updated, and deleted.
 
-All six automated validation tests passed with zero failures.
+All seven automated validation tests passed with zero failures.
 
 The application is ready for final documentation review and submission checks.

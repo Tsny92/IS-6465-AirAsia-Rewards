@@ -12,13 +12,15 @@ $formData = [
 ];
 
 // Process submitted form data.
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $formData = [
-        'cardName' => $_POST['cardName'] ?? '',
-        'cardType' => $_POST['cardType'] ?? '',
-        'cardValue' => $_POST['cardValue'] ?? '',
-        'points' => $_POST['points'] ?? ''
-    ];
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {  
+    // Preserve normal text values and reject malformed array inputs.
+    foreach ($formData as $field => $defaultValue) {
+        if (isset($_POST[$field]) && is_string($_POST[$field])) {
+            $formData[$field] = $_POST[$field];
+        } else {
+            $formData[$field] = '';
+        }
+    }
 
     // Validate the submitted information.
     $errors = validateGiftCard($formData);  

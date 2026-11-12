@@ -147,15 +147,15 @@ The initial database contains five ACCOUNT records and 20 GIFTCARD records.
 
 ### Use Case Traceability
 
-The following table maps the five required gift card management use cases to their implementation and verification.
+The following table maps the five required Homework 3 use cases to their PHP implementations, database tables, and testing evidence.
 
-| Use Case | Description | PHP Page | Database Operation | Verification |
-|---|---|---|---|---|
-| UC01 | View Gift Card List | card-list.php | SELECT | T01 |
-| UC02 | View Gift Card Details | card-details.php | SELECT by cardId | T02, T03 |
-| UC03 | Add Gift Card | card-add.php | INSERT | T04, T05 |
-| UC04 | Update Gift Card | card-update.php | UPDATE | T06 |
-| UC05 | Delete Gift Card | card-delete.php | DELETE | T07, T08 |
+| Use Case | PHP Page | Database Table | Test Evidence |
+|---|---|---|---|
+| View a List of Gift Cards | card-list.php | GIFTCARD | Opened the Gift Card List and verified that 20 gift cards were retrieved from SQLite and displayed with their names, images, and points. |
+| View Details of One Gift Card | card-details.php | GIFTCARD | Selected existing gift cards and verified that the correct card attributes were displayed. Also tested invalid and nonexistent card IDs. |
+| Add a Gift Card | card-add.php | GIFTCARD | Submitted a valid Test Visa $30 Gift Card and verified that SQLite created a new record with cardId 21. |
+| Update a Gift Card | card-update.php | GIFTCARD | Updated Card ID 1 from an Amazon $10 Gift Card to an Amazon $15 Gift Card and verified the updated information directly in SQLite. |
+| Delete a Gift Card | card-delete.php | GIFTCARD | Used the confirmation form to delete Card ID 21 and verified that the record no longer existed in SQLite and the total returned to 20 gift cards. |
 
 ### Input Validation
 

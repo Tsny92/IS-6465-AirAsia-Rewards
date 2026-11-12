@@ -26,53 +26,147 @@ The application uses prepared SQL statements for database operations and validat
 
 ## 2. Functional Test Cases
 
-| Test ID | Test Description | Expected Result | Status |
-|---|---|---|---|
-| T01 | Open the Gift Card List page | All gift cards display with names, images, and points | PASS |
-| T02 | View an existing gift card | Correct gift card details display | PASS |
-| T03 | Open a gift card with an invalid ID | Application rejects the invalid ID | PASS |
-| T04 | Submit invalid gift card information | Validation errors display and data is not saved | PASS |
-| T05 | Add a valid gift card | New record is inserted into SQLite and appears in the list | PASS |
-| T06 | Update an existing gift card | Updated information is saved and displayed | PASS |
-| T07 | Open the Delete Gift Card confirmation page | Selected card details display without deleting the record | PASS |
-| T08 | Confirm gift card deletion | Record is deleted and the application returns to the list | PASS |
+The following tests correspond to the eight required test cases in the Homework 3 assignment.
 
-### Functional Testing Notes
+### T01 - Validation Test Harness
 
-**T01 - Gift Card List:**  
-Verified that the list page retrieved and displayed 20 seeded gift cards using PDO.
+**Test Steps and Input:**
+1. Open the Codespaces terminal.
+2. Execute `php -d xdebug.mode=off tests/validation-tests.php`.
+3. Review the PASS/FAIL output for six validation scenarios.
 
-**T02 - Gift Card Details:**  
-Verified that the details page retrieved the selected gift card using a prepared SELECT statement.
+**Expected Result:** All six tests pass without modifying database records.
 
-**T03 - Invalid Gift Card ID:**  
-Verified that invalid IDs are rejected and nonexistent records are handled.
+**Actual Result:** All six validation tests passed with zero failures.
 
-**T04 - Invalid Form Submission:**  
-Submitted a gift card with a negative card value. Server-side validation rejected the submission, displayed an error, and preserved the entered form values.
+**Status:** PASS
 
-**T05 - Add Gift Card:**  
-Created a test record with the following information:
+### T02 - View Gift Card List
 
-- Card Name: Test Visa $30 Gift Card
-- Card Type: Digital
-- Card Value: $30.00
-- Points Required: 3000
+**Test Steps and Input:**
+1. Open `card-list.php` in the browser.
+2. Examine the displayed gift cards.
+3. Verify that each card displays its name, image, and points required.
 
-SQLite verification confirmed the new record was inserted with cardId 21.
+**Expected Result:** All 20 seeded gift cards display correctly with links to their details.
 
-**T06 - Update Gift Card:**  
-Updated cardId 1 from Amazon $10 Gift Card to Amazon $15 Gift Card.
+**Actual Result:** The page retrieved and displayed 20 gift cards from SQLite with their names, images, and points required.
 
-SQLite verification confirmed the updated card name, $15.00 value, and 1500 points.
+**Status:** PASS
 
-**T07 - Delete Confirmation:**  
-Verified that the Delete Gift Card page identifies the selected record and displays a confirmation form before deletion.
+### T03 - View Gift Card Details
 
-**T08 - Delete Gift Card:**  
-Deleted the test record with cardId 21 using the confirmation form.
+**Test Steps and Input:**
+1. Open `card-details.php?card_id=1`.
+2. Verify the displayed Card ID, name, type, value, and points.
+3. Open another existing gift card to confirm that the page displays the selected record.
 
-SQLite verification returned no record for cardId 21. The total gift card count returned to 20.
+**Expected Result:** The page displays the correct attributes for the selected gift card.
+
+**Actual Result:** The Details page displayed the selected gift card's attributes correctly.
+
+**Status:** PASS
+
+### T04 - Add Gift Card
+
+**Test Steps and Input:**
+1. Open `card-add.php`.
+2. Enter the following information:
+   - Card Name: Test Visa $30 Gift Card
+   - Card Type: Digital
+   - Card Value: 30.00
+   - Points Required: 3000
+3. Click Save Gift Card.
+4. Query SQLite to verify the new record.
+
+**Expected Result:** A new gift card is inserted and the user returns to the Gift Card List.
+
+**Actual Result:** SQLite confirmed that the gift card was inserted with Card ID 21, Digital type, $30.00 value, and 3000 points.
+
+**Status:** PASS
+
+### T05 - Update Gift Card
+
+**Test Steps and Input:**
+1. Open `card-update.php?card_id=1`.
+2. Change the existing Amazon $10 Gift Card to:
+   - Card Name: Amazon $15 Gift Card
+   - Card Type: Digital
+   - Card Value: 15.00
+   - Points Required: 1500
+3. Submit the form.
+4. Verify the changes using SQLite.
+
+**Expected Result:** The selected gift card is updated and the user returns to its Details page.
+
+**Actual Result:** SQLite confirmed that Card ID 1 contained the updated name, value, and points. The original values were restored after testing.
+
+**Status:** PASS
+
+### T06 - Delete Gift Card
+
+**Test Steps and Input:**
+1. Open `card-delete.php?card_id=21`.
+2. Review the selected gift card information.
+3. Submit the confirmation form.
+4. Query SQLite for Card ID 21.
+5. Verify the remaining gift card count.
+
+**Expected Result:** The record is deleted only after POST confirmation, and the user returns to the Gift Card List.
+
+**Actual Result:** SQLite returned no record for Card ID 21. The remaining gift card count was 20.
+
+**Status:** PASS
+
+### T07 - Invalid or Altered Input Handling
+
+**Test Steps and Input:**
+1. Open `card-add.php`.
+2. Temporarily add the `novalidate` attribute to the HTML form to bypass browser validation.
+3. Enter:
+   - Card Name: Test Gift Card
+   - Card Type: Digital
+   - Card Value: -10
+   - Points Required: 1000
+4. Submit the form.
+5. Observe the validation messages and retained values.
+6. Remove the temporary `novalidate` attribute.
+
+**Expected Result:** Server-side validation rejects the negative value, displays an error, and preserves entered information.
+
+**Actual Result:** PHP rejected the negative card value, displayed validation feedback, and preserved the submitted form values.
+
+**Status:** PASS
+
+### T08 - Invalid Gift Card Identifier Handling
+
+**Test Steps and Input:**
+1. Open `card-details.php` with a missing or invalid `card_id`.
+2. Open the page with a nonexistent positive integer ID.
+3. Verify the application's responses.
+
+**Expected Result:** Invalid IDs return an appropriate error, and nonexistent gift cards are handled safely without exposing database information.
+
+**Actual Result:** Invalid IDs were rejected with HTTP 400, and nonexistent gift cards were handled with HTTP 404.
+
+**Status:** PASS
+
+### Functional Testing Summary
+
+| Test ID | Test | Status |
+|---|---|---|
+| T01 | Validation test harness | PASS |
+| T02 | View Gift Card List | PASS |
+| T03 | View Gift Card Details | PASS |
+| T04 | Add Gift Card | PASS |
+| T05 | Update Gift Card | PASS |
+| T06 | Delete Gift Card | PASS |
+| T07 | Invalid or altered input handling | PASS |
+| T08 | Invalid Gift Card identifier handling | PASS |
+
+**Total: 8 passed, 0 failed.**
+
+All temporary database changes made during testing were reversed or removed.
 
 ---
 

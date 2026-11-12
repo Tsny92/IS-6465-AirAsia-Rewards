@@ -1,7 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    
 <?php
 require_once __DIR__ . '/includes/db.php';
 

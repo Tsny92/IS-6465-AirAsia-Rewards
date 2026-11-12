@@ -1,60 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gift Card List | AirAsia Rewards</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+    
+<?php
+require_once __DIR__ . '/includes/db.php';
 
-    <main class="page-container">
-        <header class="page-header">
-            <h1>AirAsia Rewards System</h1>
-            <h2>Gift Card List</h2>
+// Connect to SQLite and retrieve all gift cards.
+$pdo = getDBConnection();
 
-            <nav class="page-actions">
-                <a href="card-add.php" class="btn-link">
-                    Add Gift Card
-                </a>    
-<a href="card-list.php" class="btn-link btn-secondary"
-   title="Add Customer functionality is coming in a future assignment">
-    Add Customer (Coming Soon)
-</a>
-            </nav>
-        </header>
+$stmt = $pdo->query(
+    'SELECT cardId, cardName, cardType, cardValue, points
+     FROM GIFTCARD
+     ORDER BY cardId ASC'
+);
 
-        <section class="gift-card-grid">
+$giftCards = $stmt->fetchAll();
 
-            <article class="gift-card">
-                <a href="card-details.php">
-                    <img src="images/gift-card.svg"
-                         alt="Gift Card Option 1">
-                    <h3>Gift Card Option 1</h3>
-                </a>
-                <p>10 Points</p>
-            </article>
+$pageTitle = 'Gift Card List';
+require_once __DIR__ . '/includes/header.php';
+?>
 
-            <article class="gift-card">
-                <a href="card-details.php">
-                    <img src="images/gift-card.svg"
-                         alt="Gift Card Option 2">
-                    <h3>Gift Card Option 2</h3>
-                </a>
-                <p>25 Points</p>
-            </article>
+<main class="page-container">
+    <?php require_once __DIR__ . '/includes/nav.php'; ?>
 
-            <article class="gift-card">
-                <a href="card-details.php">
-                    <img src="images/gift-card.svg"
-                         alt="Gift Card Option 3">
-                    <h3>Gift Card Option 3</h3>
-                </a>
-                <p>50 Points</p>
-            </article>
+    <h2>Gift Card List</h2>
+    
+<section class="gift-card-grid">
 
-        </section>
-    </main>
+    <?php foreach ($giftCards as $card): ?>
 
-</body>
-</html>
+        <article class="gift-card">
+            <a href="card-details.php?card_id=<?= (int) $card['cardId'] ?>">
+                <img
+                    src="images/gift-card.svg"
+                    alt="<?= htmlspecialchars($card['cardName'], ENT_QUOTES, 'UTF-8') ?>"
+                >
+
+                <h3>
+                    <?= htmlspecialchars($card['cardName'], ENT_QUOTES, 'UTF-8') ?>
+                </h3>
+            </a>
+
+            <p><?= (int) $card['points'] ?> Points</p>
+        </article>
+
+    <?php endforeach; ?>
+
+</section>
+
+</main>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
